@@ -1,0 +1,64 @@
+#!/bin/bash
+green="\e[92m"
+red="\e[91m"
+default="\e[0m"
+bold="\e[1m"
+QUIET=0
+t=0.1
+toInstall=()
+
+## (nameIn AptGet,NameForHash)
+programs=(samba,samba openssh-server,sshd vsftpd,vsftpd)
+
+
+
+msg(){
+        if [ ${QUIET} -eq 0 ] ;then
+                echo $@
+        fi
+}
+
+checkIfInstalled(){
+	msg -ne "-$(echo "$1"|cut -d, -f1)"
+	if ! hash $(echo "$1"|cut -d, -f2) 2>/dev/null; then 
+			msg -ne "[${red}${bold}XX${default}]"
+			toInstall[${#toInstall[@]}]=$1
+			msg "---added to Install"
+	else
+		msg -e "[${green}${bold}OK${default}]"
+	fi
+	sleep $t
+}
+
+instalar() {
+	arr=$@
+	for program in ${arr[@]} 
+	do
+			prog=$(echo "$program"|cut -d, -f1)
+			msg -ne "--- Instalando $prog"
+			errn=$( { apt-get -y -q install $prog; } 2>&1)
+			if [ ! $? ]; then
+				msg -e "[${red}${bold}ERROR${default}]"
+			else
+				msg -e "[${green}${bold}OK${default}]"
+			fi
+	done
+
+}
+
+
+for program in "${programs[@]}"
+	do
+		checkIfInstalled $program
+	done
+
+if ! [ $(id -u) = "0" ] 2>/dev/null; then
+	echo -e "${red}${bold}You don't have admin privileges, i can't install the programs${default}"
+	exit 1 
+fi
+
+if [ ! ${#toInstall[@]} -eq 0 ];then
+instalar ${toInstall[@]}
+fi
+
+
