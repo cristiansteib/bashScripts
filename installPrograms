@@ -1,4 +1,9 @@
 #!/bin/bash
+
+
+#VERIFICA SI ESTAN LOS PROGRAMAS QUE ESTAN EN EL ARREGLO $programs, 
+#SI NO ESTA INSTALADO LOS INSTALA. 
+
 green="\e[92m"
 red="\e[91m"
 default="\e[0m"
