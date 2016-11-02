@@ -26,7 +26,7 @@ msg(){
 msgConLinea(){
 	start=$1
 	linea="-----------------------------"
-	echo -ne "$start ${linea[@]:$(expr length $start)}"
+	echo -ne "$start ${linea[@]:$(expr length "$start")}"
 }
 	
 checkIfInstalled(){
@@ -46,7 +46,7 @@ instalar() {
 	for program in ${arr[@]} 
 	do
 			prog=$(echo "$program"|cut -d, -f1)
-			msg -ne "--- Instalando $prog"
+			msgConLinea "++++Instalando $prog"
 			errn=$( { apt-get -y -q install $prog; } 2>&1)
 			if [ ! $? ]; then
 				msg -e "[${red}${bold}ERROR${default}]"
@@ -69,6 +69,8 @@ if ! [ $(id -u) = "0" ] 2>/dev/null; then
 fi
 
 if [ ! ${#toInstall[@]} -eq 0 ];then
+	msg ""
+	msg -e "[]INSTALACION DE PROGRAMAS"
 	instalar ${toInstall[@]}
 fi
 
