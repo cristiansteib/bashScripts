@@ -13,7 +13,7 @@ t=0.1
 toInstall=()
 
 ## (nameIn AptGet,NameForHash)
-programs=(samba,samba openssh-server,sshd vsftpd,vsftpd git,git)
+programs=(python,python samba,samba openssh-server,sshd vsftpd,vsftpd git,git)
 
 
 
@@ -34,7 +34,7 @@ checkIfInstalled(){
 	if ! hash $(echo "$1"|cut -d, -f2) 2>/dev/null; then 
 			msg -ne "[${red}${bold}XX${default}]"
 			toInstall[${#toInstall[@]}]=$1
-			msg "---added to Install"
+			msg "<--add to Install"
 	else
 		msg -e "[${green}${bold}OK${default}]"
 	fi
