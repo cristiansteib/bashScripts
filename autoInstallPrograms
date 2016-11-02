@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-#VERIFICA SI ESTAN LOS PROGRAMAS DEFINIDOS EN EL ARREGLO $programs, 
+#VERIFICA SI LOS PROGRAMAS DEL ARREGLO ESTAN INSTALADOS 
 #Y SI NO ESTAN, LOS INSTALA. 
 
 green="\e[92m"
@@ -13,7 +13,7 @@ t=0.1
 toInstall=()
 
 ## (nameIn AptGet,NameForHash)
-programs=(samba,samba openssh-server,sshd vsftpd,vsftpd)
+programs=(samba,samba openssh-server,sshd vsftpd,vsftpd git,git)
 
 
 
@@ -23,8 +23,14 @@ msg(){
         fi
 }
 
+msgConLinea(){
+	start=$1
+	linea="-----------------------------"
+	echo -ne "$start ${linea[@]:$(expr length $start)}"
+}
+	
 checkIfInstalled(){
-	msg -ne "-$(echo "$1"|cut -d, -f1)"
+	msgConLinea "-$(echo "$1"|cut -d, -f1)"
 	if ! hash $(echo "$1"|cut -d, -f2) 2>/dev/null; then 
 			msg -ne "[${red}${bold}XX${default}]"
 			toInstall[${#toInstall[@]}]=$1
@@ -66,4 +72,5 @@ if [ ! ${#toInstall[@]} -eq 0 ];then
 	instalar ${toInstall[@]}
 fi
 
+exit 0
 
