@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# -q = QUIET , no muestra texto en pantalla
 
 #VERIFICA SI LOS PROGRAMAS DEL ARREGLO ESTAN INSTALADOS 
 #Y SI NO ESTAN, LOS INSTALA. 
@@ -15,7 +16,17 @@ toInstall=()
 ## (nameIn AptGet,NameForHash)
 programs=(python,python samba,samba openssh-server,sshd vsftpd,vsftpd git,git)
 
-
+for p in $(seq 1 $#)
+	do
+		eval parametro='$'$p
+		if [ $parametro == "-q" ]; then
+			QUIET=1
+		fi
+	done
+	
+if [ ! $QUIET ];then
+	clear
+fi
 
 msg(){
         if [ ${QUIET} -eq 0 ] ;then
@@ -26,7 +37,7 @@ msg(){
 msgConLinea(){
 	start=$1
 	linea="-----------------------------"
-	echo -ne "$start ${linea[@]:$(expr length "$start")}"
+	msg -ne "$start ${linea[@]:$(expr length "$start")}"
 }
 	
 checkIfInstalled(){
@@ -48,10 +59,11 @@ instalar() {
 			prog=$(echo "$program"|cut -d, -f1)
 			msgConLinea "++++Instalando $prog"
 			errn=$( { apt-get -y -q install $prog; } 2>&1)
-			if [ ! $? ]; then
-				msg -e "[${red}${bold}ERROR${default}]"
-			else
+			if [ $? -eq 0 ]; then
 				msg -e "[${green}${bold}OK${default}]"
+				
+			else
+				msg -e "[${red}${bold}ERROR${default}]"
 			fi
 	done
 
@@ -63,12 +75,13 @@ for program in "${programs[@]}"
 		checkIfInstalled $program
 	done
 
-if ! [ $(id -u) = "0" ] 2>/dev/null; then
-	echo -e "${red}${bold}You don't have admin privileges, i can't install the programs${default}"
-	exit 1 
-fi
+
 
 if [ ! ${#toInstall[@]} -eq 0 ];then
+	if ! [ $(id -u) = "0" ] 2>/dev/null; then
+		echo -e "${red}${bold}You don't have admin privileges, i can't install the programs${default}"
+		exit 1 
+	fi
 	msg ""
 	msg -e "[]INSTALACION DE PROGRAMAS"
 	instalar ${toInstall[@]}
