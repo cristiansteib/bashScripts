@@ -14,7 +14,7 @@ t=0.1
 toInstall=()
 
 ## (nameIn AptGet,NameForHash)
-programs=(python,python samba,samba openssh-server,sshd vsftpd,vsftpd git,git)
+programs=(python,python python-pip,python-pip samba,samba openssh-server,sshd vsftpd,vsftpd git,git)
 
 for p in $(seq 1 $#)
 	do
